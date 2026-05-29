@@ -6,6 +6,7 @@ import ProfileIcon from "@app/components/ProfileIcon";
 import ThemeSwitcher from "@app/components/ThemeSwitcher";
 import { useTheme } from "next-themes";
 import BrandingLogo from "./BrandingLogo";
+import { CommandPaletteTrigger } from "@app/components/command-palette/CommandPaletteTrigger";
 import { useEnvContext } from "@app/hooks/useEnvContext";
 import { useLicenseStatusContext } from "@app/hooks/useLicenseStatusContext";
 
@@ -67,6 +68,7 @@ export function LayoutHeader({ showTopBar }: LayoutHeaderProps) {
 
                         {showTopBar && (
                             <div className="flex items-center space-x-2">
+                                <CommandPaletteTrigger />
                                 <ThemeSwitcher />
                                 <ProfileIcon />
                             </div>

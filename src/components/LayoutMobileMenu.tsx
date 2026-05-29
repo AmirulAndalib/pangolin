@@ -13,6 +13,7 @@ import { useUserContext } from "@app/hooks/useUserContext";
 import { useTranslations } from "next-intl";
 import ProfileIcon from "@app/components/ProfileIcon";
 import ThemeSwitcher from "@app/components/ThemeSwitcher";
+import { CommandPaletteTrigger } from "@app/components/command-palette/CommandPaletteTrigger";
 import type { SidebarNavSection } from "@app/app/navigation";
 import {
     Sheet,
@@ -121,6 +122,7 @@ export function LayoutMobileMenu({
                 {showTopBar && (
                     <div className="ml-auto flex items-center justify-end">
                         <div className="flex items-center space-x-2">
+                            <CommandPaletteTrigger variant="mobile" />
                             <ThemeSwitcher />
                             <ProfileIcon />
                         </div>
