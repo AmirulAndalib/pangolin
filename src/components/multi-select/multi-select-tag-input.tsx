@@ -66,6 +66,14 @@ export function MultiSelectTagInput<T extends TagValue>({
                                     )}
                                     onClick={(e) => e.stopPropagation()}
                                 >
+                                    {option.color && (
+                                        <span
+                                            className="size-2 rounded-full flex-none ml-1"
+                                            style={{
+                                                backgroundColor: option.color
+                                            }}
+                                        />
+                                    )}
                                     <span className="max-w-40 text-ellipsis overflow-hidden">
                                         {option.text}
                                     </span>
