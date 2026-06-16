@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { db } from "@server/db";
 import { resourceRules, resourcePolicyRules, resources } from "@server/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import response from "@server/lib/response";
 import HttpCode from "@server/types/HttpCode";
 import createHttpError from "http-errors";
@@ -73,14 +73,16 @@ export async function deleteResourceRule(
             );
         }
 
-        const isInlinePolicy =
-            resource.resourcePolicyId === null &&
-            resource.defaultResourcePolicyId !== null;
-
-        if (isInlinePolicy) {
+        if (resource.resourcePolicyId !== null) {
+            const policyId = resource.resourcePolicyId;
             const [deletedRule] = await db
                 .delete(resourcePolicyRules)
-                .where(eq(resourcePolicyRules.ruleId, ruleId))
+                .where(
+                    and(
+                        eq(resourcePolicyRules.ruleId, ruleId),
+                        eq(resourcePolicyRules.resourcePolicyId, policyId)
+                    )
+                )
                 .returning();
 
             if (!deletedRule) {

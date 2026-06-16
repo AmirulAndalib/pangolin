@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { db } from "@server/db";
-import { resourceRules, resources } from "@server/db";
-import { eq } from "drizzle-orm";
+import { resourcePolicyRules, resourceRules, resources } from "@server/db";
+import { and, eq } from "drizzle-orm";
 import response from "@server/lib/response";
 import HttpCode from "@server/types/HttpCode";
 import createHttpError from "http-errors";
@@ -126,6 +126,92 @@ export async function updateResourceRule(
                     "Cannot create rule for non-http resource"
                 )
             );
+        }
+
+        const policyId = resource.resourcePolicyId;
+
+        if (policyId !== null) {
+            const [existingRule] = await db
+                .select()
+                .from(resourcePolicyRules)
+                .where(
+                    and(
+                        eq(resourcePolicyRules.ruleId, ruleId),
+                        eq(resourcePolicyRules.resourcePolicyId, policyId)
+                    )
+                )
+                .limit(1);
+
+            if (!existingRule) {
+                return next(
+                    createHttpError(
+                        HttpCode.NOT_FOUND,
+                        `Resource rule with ID ${ruleId} not found`
+                    )
+                );
+            }
+
+            const match = updateData.match || existingRule.match;
+            const { value } = updateData;
+
+            if (value !== undefined) {
+                if (match === "CIDR") {
+                    if (!isValidCIDR(value)) {
+                        return next(
+                            createHttpError(
+                                HttpCode.BAD_REQUEST,
+                                "Invalid CIDR provided"
+                            )
+                        );
+                    }
+                } else if (match === "IP") {
+                    if (!isValidIP(value)) {
+                        return next(
+                            createHttpError(
+                                HttpCode.BAD_REQUEST,
+                                "Invalid IP provided"
+                            )
+                        );
+                    }
+                } else if (match === "PATH") {
+                    if (!isValidUrlGlobPattern(value)) {
+                        return next(
+                            createHttpError(
+                                HttpCode.BAD_REQUEST,
+                                "Invalid URL glob pattern provided"
+                            )
+                        );
+                    }
+                } else if (match === "REGION") {
+                    if (!isValidRegionId(value)) {
+                        return next(
+                            createHttpError(
+                                HttpCode.BAD_REQUEST,
+                                "Invalid region ID provided"
+                            )
+                        );
+                    }
+                }
+            }
+
+            const [updatedRule] = await db
+                .update(resourcePolicyRules)
+                .set(updateData)
+                .where(
+                    and(
+                        eq(resourcePolicyRules.ruleId, ruleId),
+                        eq(resourcePolicyRules.resourcePolicyId, policyId)
+                    )
+                )
+                .returning();
+
+            return response(res, {
+                data: updatedRule,
+                success: true,
+                error: false,
+                message: "Resource rule updated successfully",
+                status: HttpCode.OK
+            });
         }
 
         // Verify that the rule exists and belongs to the specified resource

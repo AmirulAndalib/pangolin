@@ -141,16 +141,10 @@ export async function getResource(
             );
         }
 
-        const isInlinePolicy =
-            resource.resourcePolicyId === null &&
-            resource.defaultResourcePolicyId !== null;
-
         let returnData = resource;
-        if (isInlinePolicy) {
+        if (resource.resourcePolicyId !== null) {
             // get the policy
-            const policy = await queryInlinePolicy(
-                resource.defaultResourcePolicyId!
-            );
+            const policy = await queryInlinePolicy(resource.resourcePolicyId);
             returnData = {
                 ...returnData,
                 sso: policy?.sso || null,

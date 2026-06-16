@@ -140,15 +140,11 @@ export async function listResourceRules(
             );
         }
 
-        const isInlinePolicy =
-            resource.resourcePolicyId === null &&
-            resource.defaultResourcePolicyId !== null;
-
         let rulesList: Awaited<ReturnType<typeof queryResourceRules>>;
         let totalCount: number;
 
-        if (isInlinePolicy) {
-            const policyId = resource.defaultResourcePolicyId!;
+        if (resource.resourcePolicyId !== null) {
+            const policyId = resource.resourcePolicyId;
             const policyRules = await queryPolicyRules(policyId)
                 .limit(limit)
                 .offset(offset);

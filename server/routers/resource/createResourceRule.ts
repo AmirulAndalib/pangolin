@@ -154,12 +154,8 @@ export async function createResourceRule(
         }
 
         // Create the new resource rule
-        const isInlinePolicy =
-            resource.resourcePolicyId === null &&
-            resource.defaultResourcePolicyId !== null;
-
-        if (isInlinePolicy) {
-            const policyId = resource.defaultResourcePolicyId!;
+        if (resource.resourcePolicyId !== null) {
+            const policyId = resource.resourcePolicyId;
             const [newRule] = await db
                 .insert(resourcePolicyRules)
                 .values({
