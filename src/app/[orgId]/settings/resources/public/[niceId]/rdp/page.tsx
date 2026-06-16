@@ -40,6 +40,7 @@ type TargetRow = {
     targetId: number;
     resourceId: number;
     siteId: number;
+    siteType: string | null;
     siteName?: string;
     mode: string | null;
     ip: string;
@@ -105,7 +106,8 @@ function RdpServerForm({
     const api = createApiClient(useEnvContext());
     const router = useRouter();
     const targets = targetsResponse.targets.filter((t) => t.mode === "rdp");
-    const firstTarget = targets[0];
+    const browserGatewayTargets = targets.filter((t) => t.siteType === "newt");
+    const firstTarget = browserGatewayTargets[0];
 
     const formSchema = useMemo(
         () => createBrowserGatewayTargetFormSchema(t),
@@ -115,7 +117,7 @@ function RdpServerForm({
     const form = useForm<BrowserGatewayTargetFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            selectedSites: targets.map((target) => ({
+            selectedSites: browserGatewayTargets.map((target) => ({
                 siteId: target.siteId,
                 name: target.siteName ?? String(target.siteId),
                 type: "newt" as const

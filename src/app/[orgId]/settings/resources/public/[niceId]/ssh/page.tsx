@@ -62,6 +62,7 @@ type TargetRow = {
     targetId: number;
     resourceId: number;
     siteId: number;
+    siteType: string | null;
     siteName?: string;
     mode: string | null;
     ip: string;
@@ -130,7 +131,9 @@ function SshServerForm({
 
     const isNativeInitially = resource.authDaemonMode === "native";
     const targets = targetsResponse.targets.filter((t) => t.mode === "ssh");
+    const browserGatewayTargets = targets.filter((t) => t.siteType === "newt");
     const firstTarget = targets[0];
+    const firstBrowserGatewayTarget = browserGatewayTargets[0];
     const initialPamMode =
         (resource.pamMode as "passthrough" | "push") || "passthrough";
     const initialStandardDaemonLocation = isNativeInitially
@@ -163,18 +166,18 @@ function SshServerForm({
             selectedSites:
                 isNativeInitially || useSingleSiteOnLoad
                     ? []
-                    : targets.map((target) => ({
+                    : browserGatewayTargets.map((target) => ({
                           siteId: target.siteId,
                           name: target.siteName ?? String(target.siteId),
                           type: "newt" as const
                       })),
             selectedSite:
-                useSingleSiteOnLoad && firstTarget
+                useSingleSiteOnLoad && firstBrowserGatewayTarget
                     ? {
-                          siteId: firstTarget.siteId,
+                          siteId: firstBrowserGatewayTarget.siteId,
                           name:
-                              firstTarget.siteName ??
-                              String(firstTarget.siteId),
+                              firstBrowserGatewayTarget.siteName ??
+                              String(firstBrowserGatewayTarget.siteId),
                           type: "newt" as const
                       }
                     : null,
@@ -190,11 +193,11 @@ function SshServerForm({
                     : null,
             destination: isNativeInitially
                 ? ""
-                                : (firstTarget?.ip ?? ""),
+                                : (firstBrowserGatewayTarget?.ip ?? ""),
             destinationPort: isNativeInitially
                 ? "22"
-                : firstTarget
-                                    ? String(firstTarget.port)
+                : firstBrowserGatewayTarget
+                                    ? String(firstBrowserGatewayTarget.port)
                   : "22"
         }
     });
