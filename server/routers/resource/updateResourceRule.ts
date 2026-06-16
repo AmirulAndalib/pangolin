@@ -151,16 +151,17 @@ export async function updateResourceRule(
             );
         }
 
-        const policyId = resource.resourcePolicyId;
-
-        if (policyId !== null) {
+        if (resource.resourcePolicyId !== null) {
             const [existingRule] = await db
                 .select()
                 .from(resourcePolicyRules)
                 .where(
                     and(
                         eq(resourcePolicyRules.ruleId, ruleId),
-                        eq(resourcePolicyRules.resourcePolicyId, policyId)
+                        eq(
+                            resourcePolicyRules.resourcePolicyId,
+                            resource.resourcePolicyId
+                        )
                     )
                 )
                 .limit(1);
@@ -195,7 +196,10 @@ export async function updateResourceRule(
                 .where(
                     and(
                         eq(resourcePolicyRules.ruleId, ruleId),
-                        eq(resourcePolicyRules.resourcePolicyId, policyId)
+                        eq(
+                            resourcePolicyRules.resourcePolicyId,
+                            resource.resourcePolicyId
+                        )
                     )
                 )
                 .returning();

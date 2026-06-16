@@ -74,13 +74,15 @@ export async function deleteResourceRule(
         }
 
         if (resource.resourcePolicyId !== null) {
-            const policyId = resource.resourcePolicyId;
             const [deletedRule] = await db
                 .delete(resourcePolicyRules)
                 .where(
                     and(
                         eq(resourcePolicyRules.ruleId, ruleId),
-                        eq(resourcePolicyRules.resourcePolicyId, policyId)
+                        eq(
+                            resourcePolicyRules.resourcePolicyId,
+                            resource.resourcePolicyId
+                        )
                     )
                 )
                 .returning();
