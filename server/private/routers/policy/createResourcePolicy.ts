@@ -207,8 +207,7 @@ export async function createResourcePolicy(
             const [provider] = await db
                 .select()
                 .from(idp)
-                .innerJoin(idpOrg, eq(idpOrg.idpId, idp.idpId))
-                .where(and(eq(idp.idpId, skipToIdpId), eq(idpOrg.orgId, orgId)))
+                .where(eq(idp.idpId, skipToIdpId))
                 .limit(1);
 
             if (!provider) {
@@ -218,6 +217,28 @@ export async function createResourcePolicy(
                         "Identity provider not found in this organization"
                     )
                 );
+            }
+
+            if (process.env.IDENTITY_PROVIDER_MODE === "org") {
+                const [providerOrg] = await db
+                    .select()
+                    .from(idpOrg)
+                    .where(
+                        and(
+                            eq(idpOrg.idpId, skipToIdpId),
+                            eq(idpOrg.orgId, orgId)
+                        )
+                    )
+                    .limit(1);
+
+                if (!providerOrg) {
+                    return next(
+                        createHttpError(
+                            HttpCode.INTERNAL_SERVER_ERROR,
+                            "Identity provider not found in this organization"
+                        )
+                    );
+                }
             }
         }
 

@@ -74,19 +74,32 @@ export async function updateResourcePolicies(
             const [provider] = await trx
                 .select()
                 .from(idp)
-                .innerJoin(idpOrg, eq(idpOrg.idpId, idp.idpId))
-                .where(
-                    and(
-                        eq(idp.idpId, policyData["auto-login-idp"]),
-                        eq(idpOrg.orgId, orgId)
-                    )
-                )
+                .where(eq(idp.idpId, policyData["auto-login-idp"]))
                 .limit(1);
 
             if (!provider) {
                 throw new Error(
                     `Identity provider not found for policy '${policyNiceId}' in this organization`
                 );
+            }
+
+            if (process.env.IDENTITY_PROVIDER_MODE === "org") {
+                const [providerOrg] = await trx
+                    .select()
+                    .from(idpOrg)
+                    .where(
+                        and(
+                            eq(idpOrg.idpId, policyData["auto-login-idp"]),
+                            eq(idpOrg.orgId, orgId)
+                        )
+                    )
+                    .limit(1);
+
+                if (!providerOrg) {
+                    throw new Error(
+                        `Identity provider not found for policy '${policyNiceId}' in this organization`
+                    );
+                }
             }
         }
 
