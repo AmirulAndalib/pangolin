@@ -214,7 +214,7 @@ export async function createResourcePolicy(
                 return next(
                     createHttpError(
                         HttpCode.INTERNAL_SERVER_ERROR,
-                        "Identity provider not found in this organization"
+                        "Identity provider not found"
                     )
                 );
             }

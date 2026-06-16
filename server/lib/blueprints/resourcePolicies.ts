@@ -79,7 +79,7 @@ export async function updateResourcePolicies(
 
             if (!provider) {
                 throw new Error(
-                    `Identity provider not found for policy '${policyNiceId}' in this organization`
+                    `Identity provider not found for policy '${policyNiceId}'`
                 );
             }
 
