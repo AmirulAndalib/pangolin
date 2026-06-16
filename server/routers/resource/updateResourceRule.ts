@@ -37,6 +37,29 @@ const updateResourceRuleSchema = z
         error: "At least one field must be provided for update"
     });
 
+function getRuleValueValidationError(
+    match: "CIDR" | "IP" | "PATH" | "COUNTRY" | "ASN" | "REGION",
+    value: string
+): string | null {
+    if (match === "CIDR" && !isValidCIDR(value)) {
+        return "Invalid CIDR provided";
+    }
+
+    if (match === "IP" && !isValidIP(value)) {
+        return "Invalid IP provided";
+    }
+
+    if (match === "PATH" && !isValidUrlGlobPattern(value)) {
+        return "Invalid URL glob pattern provided";
+    }
+
+    if (match === "REGION" && !isValidRegionId(value)) {
+        return "Invalid region ID provided";
+    }
+
+    return null;
+}
+
 registry.registerPath({
     method: "post",
     path: "/resource/{resourceId}/rule/{ruleId}",
@@ -155,42 +178,14 @@ export async function updateResourceRule(
             const { value } = updateData;
 
             if (value !== undefined) {
-                if (match === "CIDR") {
-                    if (!isValidCIDR(value)) {
-                        return next(
-                            createHttpError(
-                                HttpCode.BAD_REQUEST,
-                                "Invalid CIDR provided"
-                            )
-                        );
-                    }
-                } else if (match === "IP") {
-                    if (!isValidIP(value)) {
-                        return next(
-                            createHttpError(
-                                HttpCode.BAD_REQUEST,
-                                "Invalid IP provided"
-                            )
-                        );
-                    }
-                } else if (match === "PATH") {
-                    if (!isValidUrlGlobPattern(value)) {
-                        return next(
-                            createHttpError(
-                                HttpCode.BAD_REQUEST,
-                                "Invalid URL glob pattern provided"
-                            )
-                        );
-                    }
-                } else if (match === "REGION") {
-                    if (!isValidRegionId(value)) {
-                        return next(
-                            createHttpError(
-                                HttpCode.BAD_REQUEST,
-                                "Invalid region ID provided"
-                            )
-                        );
-                    }
+                const validationError = getRuleValueValidationError(
+                    match,
+                    value
+                );
+                if (validationError) {
+                    return next(
+                        createHttpError(HttpCode.BAD_REQUEST, validationError)
+                    );
                 }
             }
 
@@ -243,42 +238,11 @@ export async function updateResourceRule(
         const { value } = updateData;
 
         if (value !== undefined) {
-            if (match === "CIDR") {
-                if (!isValidCIDR(value)) {
-                    return next(
-                        createHttpError(
-                            HttpCode.BAD_REQUEST,
-                            "Invalid CIDR provided"
-                        )
-                    );
-                }
-            } else if (match === "IP") {
-                if (!isValidIP(value)) {
-                    return next(
-                        createHttpError(
-                            HttpCode.BAD_REQUEST,
-                            "Invalid IP provided"
-                        )
-                    );
-                }
-            } else if (match === "PATH") {
-                if (!isValidUrlGlobPattern(value)) {
-                    return next(
-                        createHttpError(
-                            HttpCode.BAD_REQUEST,
-                            "Invalid URL glob pattern provided"
-                        )
-                    );
-                }
-            } else if (match === "REGION") {
-                if (!isValidRegionId(value)) {
-                    return next(
-                        createHttpError(
-                            HttpCode.BAD_REQUEST,
-                            "Invalid region ID provided"
-                        )
-                    );
-                }
+            const validationError = getRuleValueValidationError(match, value);
+            if (validationError) {
+                return next(
+                    createHttpError(HttpCode.BAD_REQUEST, validationError)
+                );
             }
         }
 
