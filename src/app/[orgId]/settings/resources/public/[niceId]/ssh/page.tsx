@@ -193,11 +193,11 @@ function SshServerForm({
                     : null,
             destination: isNativeInitially
                 ? ""
-                                : (firstBrowserGatewayTarget?.ip ?? ""),
+                : (firstBrowserGatewayTarget?.ip ?? ""),
             destinationPort: isNativeInitially
                 ? "22"
                 : firstBrowserGatewayTarget
-                                    ? String(firstBrowserGatewayTarget.port)
+                  ? String(firstBrowserGatewayTarget.port)
                   : "22"
         }
     });
