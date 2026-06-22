@@ -18,6 +18,7 @@ import logger from "@server/logger";
 import { fromError } from "zod-validation-error";
 import { and, eq, inArray, ne } from "drizzle-orm";
 import { OpenAPITags, registry } from "@server/openApi";
+import privateConfig from "@server/private/lib/config";
 
 const setResourcePolicyAcccessControlBodySchema = z.strictObject({
     sso: z.boolean(),
@@ -119,12 +120,18 @@ export async function setResourcePolicyAccessControl(
                 );
             }
 
-            if (process.env.IDENTITY_PROVIDER_MODE === "org") {
+            if (
+                privateConfig.getRawPrivateConfig().app
+                    .identity_provider_mode === "org"
+            ) {
                 const [providerOrg] = await db
                     .select()
                     .from(idpOrg)
                     .where(
-                        and(eq(idpOrg.idpId, idpId), eq(idpOrg.orgId, policy.orgId))
+                        and(
+                            eq(idpOrg.idpId, idpId),
+                            eq(idpOrg.orgId, policy.orgId)
+                        )
                     )
                     .limit(1);
 

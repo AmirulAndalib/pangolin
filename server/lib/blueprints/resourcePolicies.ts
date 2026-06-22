@@ -23,6 +23,7 @@ import { hashPassword } from "@server/auth/password";
 import { isValidCIDR, isValidIP, isValidUrlGlobPattern } from "../validators";
 import { isLicensedOrSubscribed } from "#dynamic/lib/isLicencedOrSubscribed";
 import { tierMatrix } from "../billing/tierMatrix";
+import privateConfig from "@server/private/lib/config";
 
 export type ResourcePoliciesResults = {
     resourcePolicyId: number;
@@ -83,7 +84,10 @@ export async function updateResourcePolicies(
                 );
             }
 
-            if (process.env.IDENTITY_PROVIDER_MODE === "org") {
+            if (
+                privateConfig.getRawPrivateConfig().app
+                    .identity_provider_mode === "org"
+            ) {
                 const [providerOrg] = await trx
                     .select()
                     .from(idpOrg)

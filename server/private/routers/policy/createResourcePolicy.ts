@@ -38,6 +38,7 @@ import {
 } from "@server/lib/validators";
 import logger from "@server/logger";
 import { OpenAPITags, registry } from "@server/openApi";
+import privateConfig from "@server/private/lib/config";
 import HttpCode from "@server/types/HttpCode";
 import { and, eq, inArray, type InferInsertModel } from "drizzle-orm";
 import { NextFunction, Request, Response } from "express";
@@ -219,7 +220,10 @@ export async function createResourcePolicy(
                 );
             }
 
-            if (process.env.IDENTITY_PROVIDER_MODE === "org") {
+            if (
+                privateConfig.getRawPrivateConfig().app
+                    .identity_provider_mode === "org"
+            ) {
                 const [providerOrg] = await db
                     .select()
                     .from(idpOrg)
