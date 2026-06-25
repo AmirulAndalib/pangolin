@@ -2556,6 +2556,7 @@
     "idpGoogleDescription": "Google OAuth2/OIDC leverandør",
     "idpAzureDescription": "Microsoft Azure OAuth2/OIDC provider",
     "subnet": "Subnett",
+    "utilitySubnet": "Utility Subnet",
     "subnetDescription": "Undernettverket for denne organisasjonens nettverkskonfigurasjon.",
     "customDomain": "Egendefinert domene",
     "authPage": "Autentiseringssider",
