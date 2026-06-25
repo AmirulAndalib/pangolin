@@ -2556,6 +2556,7 @@
     "idpGoogleDescription": "Google OAuth2/OIDC 提供商",
     "idpAzureDescription": "Microsoft Azure OAuth2/OIDC provider",
     "subnet": "子网",
+    "utilitySubnet": "Utility Subnet",
     "subnetDescription": "此组织网络配置的子网。",
     "customDomain": "自定义域",
     "authPage": "身份验证页面",
