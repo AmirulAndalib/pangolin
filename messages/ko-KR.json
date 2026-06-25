@@ -2556,6 +2556,7 @@
     "idpGoogleDescription": "Google OAuth2/OIDC 공급자",
     "idpAzureDescription": "Microsoft Azure OAuth2/OIDC 공급자",
     "subnet": "서브넷",
+    "utilitySubnet": "Utility Subnet",
     "subnetDescription": "이 조직의 네트워크 구성에 대한 서브넷입니다.",
     "customDomain": "사용자 정의 도메인",
     "authPage": "인증 페이지",
