@@ -2556,6 +2556,7 @@
     "idpGoogleDescription": "Google OAuth2/OIDC доставчик",
     "idpAzureDescription": "Microsoft Azure OAuth2/OIDC доставчик",
     "subnet": "Подмрежа",
+    "utilitySubnet": "Utility Subnet",
     "subnetDescription": "Подмрежата за конфигурацията на мрежата на тази организация.",
     "customDomain": "Персонализиран домейн.",
     "authPage": "Страници за автентификация.",
