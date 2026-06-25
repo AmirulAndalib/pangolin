@@ -2556,6 +2556,7 @@
     "idpGoogleDescription": "Google OAuth2/OIDC sağlayıcısı",
     "idpAzureDescription": "Microsoft Azure OAuth2/OIDC sağlayıcısı",
     "subnet": "Alt ağ",
+    "utilitySubnet": "Utility Subnet",
     "subnetDescription": "Bu organizasyonun ağ yapılandırması için alt ağ.",
     "customDomain": "Özel Alan",
     "authPage": "Kimlik Sayfaları",
