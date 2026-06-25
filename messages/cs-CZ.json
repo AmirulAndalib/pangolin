@@ -2556,6 +2556,7 @@
     "idpGoogleDescription": "Poskytovatel Google OAuth2/OIDC",
     "idpAzureDescription": "Microsoft Azure OAuth2/OIDC provider",
     "subnet": "Podsíť",
+    "utilitySubnet": "Utility Subnet",
     "subnetDescription": "Podsíť pro konfiguraci sítě této organizace.",
     "customDomain": "Vlastní doména",
     "authPage": "Autentizační stránky",
